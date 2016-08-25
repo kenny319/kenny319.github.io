@@ -4,16 +4,16 @@
   <meta charset="utf-8">
   
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <title>Kenny&#39;s blog</title>
+  <title>LIFE IS A BEACH</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta property="og:type" content="website">
-<meta property="og:title" content="Kenny's blog">
+<meta property="og:title" content="LIFE IS A BEACH">
 <meta property="og:url" content="http://yoursite.com/index.html">
-<meta property="og:site_name" content="Kenny's blog">
+<meta property="og:site_name" content="LIFE IS A BEACH">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kenny's blog">
+<meta name="twitter:title" content="LIFE IS A BEACH">
   
-    <link rel="alternative" href="/atom.xml" title="Kenny&#39;s blog" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="LIFE IS A BEACH" type="application/atom+xml">
   
   
     <link rel="icon" href="//favicon.png">
@@ -29,12 +29,12 @@
 	<header id="header" class="inner">
 		<a href="/" class="profilepic">
 			
-			<img lazy-src="0" class="js-avatar">
+			<img lazy-src="null/images/me.jpeg" class="js-avatar">
 			
 		</a>
 
 		<hgroup>
-		  <h1 class="header-author"><a href="/">Kenny Wang</a></h1>
+		  <h1 class="header-author"><a href="/">LIFE IS A BEACH</a></h1>
 		</hgroup>
 
 		
@@ -74,7 +74,7 @@
 						<li>Links</li>
 						
 						
-						<li>About</li>
+						<li>Über</li>
 						
 					</ul>
 				</div>
@@ -96,13 +96,13 @@
 					<nav class="header-nav">
 						<div class="social">
 							
-								<a class="github" target="_blank" href="#" title="github">github</a>
+								<a class="mail" target="_blank" href="/kenny319@sina.com" title="mail">mail</a>
+					        
+								<a class="github" target="_blank" href="https://github.com/kenny319/" title="github">github</a>
 					        
 								<a class="weibo" target="_blank" href="#" title="weibo">weibo</a>
 					        
 								<a class="rss" target="_blank" href="#" title="rss">rss</a>
-					        
-								<a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
 					        
 						</div>
 					</nav>
@@ -153,17 +153,17 @@
       <nav id="mobile-nav">
   	<div class="overlay">
   		<div class="slider-trigger"></div>
-  		<h1 class="header-author js-mobile-header hide">Kenny Wang</h1>
+  		<h1 class="header-author js-mobile-header hide">LIFE IS A BEACH</h1>
   	</div>
 	<div class="intrude-less">
 		<header id="header" class="inner">
 			<div class="profilepic">
 				
-					<img lazy-src="0" class="js-avatar">
+					<img lazy-src="null/images/me.jpeg" class="js-avatar">
 				
 			</div>
 			<hgroup>
-			  <h1 class="header-author">Kenny Wang</h1>
+			  <h1 class="header-author">LIFE IS A BEACH</h1>
 			</hgroup>
 			
 			<nav class="header-menu">
@@ -179,13 +179,13 @@
 			<nav class="header-nav">
 				<div class="social">
 					
-						<a class="github" target="_blank" href="#" title="github">github</a>
+						<a class="mail" target="_blank" href="/kenny319@sina.com" title="mail">mail</a>
+			        
+						<a class="github" target="_blank" href="https://github.com/kenny319/" title="github">github</a>
 			        
 						<a class="weibo" target="_blank" href="#" title="weibo">weibo</a>
 			        
 						<a class="rss" target="_blank" href="#" title="rss">rss</a>
-			        
-						<a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
 			        
 				</div>
 			</nav>
@@ -208,20 +208,38 @@
       <input type="hidden" class="isFancy" />
     
     
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/25/multiLevelCache/">多级缓存 （上）</a>
+    </h1>
+  
+
+      </header>
+      
+    
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="多级缓存（一）"><a href="#多级缓存（一）" class="headerlink" title="多级缓存（一）"></a>多级缓存（一）</h2><h3 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h3><p>最近跟业务团队交流的时候，发现不少的业务团队都有一些分布式缓存无法解决的痛点，个别业务团队也正在尝试通过使用本地缓存来解决这些问题。由此，在本文中聊聊多级缓存。</p>
+        <h2 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h2><blockquote>
+<p>最近跟业务团队交流的时候，发现不少的业务团队都有一些分布式缓存无法解决的痛点，个别业务团队也正在尝试通过使用本地缓存来解决这些问题。由此，在本文中聊聊多级缓存。</p>
 <p>通过本文您可以了解到：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">* 业务有哪些分布式缓存无法解决的痛点</div><div class="line">* 多级缓存如何来解决这些问题</div><div class="line">* 使用本地缓存应该注意哪些问题</div><div class="line">* 本地缓存的类型和差异有哪些</div></pre></td></tr></table></figure>
-<h3 id="业务痛点"><a href="#业务痛点" class="headerlink" title="业务痛点"></a>业务痛点</h3><h4 id="批量查询"><a href="#批量查询" class="headerlink" title="批量查询"></a>批量查询</h4><p>假如有商品信息通过商品ID散列分布在不同的分布式缓存节点上，应用需要批量查询一堆商品信息。</p>
+<ul>
+<li>业务有哪些分布式缓存无法解决的痛点</li>
+<li>多级缓存如何来解决这些问题</li>
+<li>使用本地缓存应该注意哪些问题</li>
+<li>本地缓存的类型和差异有哪些</li>
+</ul>
+</blockquote>
+<h2 id="业务痛点"><a href="#业务痛点" class="headerlink" title="业务痛点"></a>业务痛点</h2><h3 id="批量查询"><a href="#批量查询" class="headerlink" title="批量查询"></a>批量查询</h3><p>假如有商品信息通过商品ID散列分布在不同的分布式缓存节点上，应用需要批量查询一堆商品信息。</p>
 <p>如果运气好缓存使用了proxy或者cluster那么至少它们还支持批量查询，但是proxy也得先把key进行分组然后分批到不同的节点上查询再聚合返回。否则如果应用用的是client sharding的话，很不幸你用的客户端可能连这个聚合的功能都没有，那么你还得自己开发类似proxy实现的聚合功能。</p>
 <p>另外，这种批量查询并聚合的效率显然过低，如果现在业务有大量的批量查询商品信息的请求，这个会极大的影响应用的吞吐能力。</p>
-<h4 id="热键"><a href="#热键" class="headerlink" title="热键"></a>热键</h4><p>同样以商品为例，如果我们的某个商品是爆款，那么一个缓存节点可能也无法支撑该商品过高的QPS。尤其是在大促或者一些特俗的业务场景如秒杀的时候，该问题表现的尤为突出。</p>
-<h4 id="高可靠性"><a href="#高可靠性" class="headerlink" title="高可靠性"></a>高可靠性</h4><p>一旦分布式缓存的节点故障，大量请求需要回源到后端的存储如数据库或者回源到后端的服务，此时可能会导致数据库或者后端的服务也瞬间负载过高无法提供服务导致雪崩的情况。或许你会说Redis不是支持主从吗？实际上从发现主节点故障到选择一个新的从节点变成主节点是有一个若干分钟的恢复期的，那么后端的回源通道是否能支撑这段时间的流量是个问题。</p>
-<h3 id="多级缓存"><a href="#多级缓存" class="headerlink" title="多级缓存"></a>多级缓存</h3><p>那么如何来解决以上的这些问题呢？</p>
-<p>一个可行的方案就是通过引入本地缓存作为一级缓存来缓存热点数据，原有的分布式缓存变成二级缓存组成多级缓存。一级缓存设置较短的过期时间，二级缓存设置较长的过期时间。把80%的流量控制在一级缓存，剩余的20%流量可以回源到二级缓存或者后端的其他回源通道。不但有效的提高了查询的效率也进一步的提高了可靠性。</p>
-<p>//TODO图示</p>
-<p>当然过期时间和二级缓存并不是必须的，根据场景大致可以分成缓存和存储两种：</p>
+<h3 id="热键"><a href="#热键" class="headerlink" title="热键"></a>热键</h3><p>同样以商品为例，如果我们的某个商品是爆款，那么一个缓存节点可能也无法支撑该商品过高的QPS。尤其是在大促或者一些特俗的业务场景如秒杀的时候，该问题表现的尤为突出。</p>
+<h3 id="高可靠性"><a href="#高可靠性" class="headerlink" title="高可靠性"></a>高可靠性</h3><p>一旦分布式缓存的节点故障，大量请求需要回源到后端的存储如数据库或者回源到后端的服务，此时可能会导致数据库或者后端的服务也瞬间负载过高无法提供服务导致雪崩的情况。或许你会说Redis不是支持主从吗？实际上从发现主节点故障到选择一个新的从节点变成主节点是有一个若干分钟的恢复期的，那么后端的回源通道是否能支撑这段时间的流量是个问题。</p>
+<h2 id="多级缓存"><a href="#多级缓存" class="headerlink" title="多级缓存"></a>多级缓存</h2><p>那么如何来解决以上的这些问题呢？</p>
+<p>一个可行的方案就是通过引入本地缓存作为一级缓存来缓存热点数据，原有的分布式缓存变成二级缓存组成多级缓存。一级缓存设置较短的过期时间，二级缓存设置较长的过期时间。把80%的流量控制在一级缓存，剩余的20%流量可以回源到二级缓存或者后端的其他回源通道（比例只是示例，不同场景不一样）。不但有效的提高了查询的效率也进一步的提高了可靠性。</p>
+<p><img src="/images/multilevelcache1/process.jpg" alt="流程"></p>
+<p>当然本地缓存的过期时间和二级缓存并不是必须的，本地缓存根据场景大致可以分成缓存和存储两种：</p>
 <table>
 <thead>
 <tr>
@@ -252,8 +270,8 @@
 </tr>
 </tbody>
 </table>
-<h3 id="新的坑"><a href="#新的坑" class="headerlink" title="新的坑"></a>新的坑</h3><p>通过多级缓存铺平了原来的坑，但是转身发现为了埋坑又挖了一堆新的坑, 心累！<br><img src="/images/keng.jpg" alt="单身狗挖坑"></p>
-<h4 id="缓存更新"><a href="#缓存更新" class="headerlink" title="缓存更新"></a>缓存更新</h4><p>当数据发生变化时如何能够及时更新到本地缓存呢？缓存的更新又需要注意些什么呢？</p>
+<h2 id="新的坑"><a href="#新的坑" class="headerlink" title="新的坑"></a>新的坑</h2><p>通过多级缓存铺平了原来的坑，但是转身发现为了埋坑又挖了一堆新的坑, 心累！<br><img src="/images/multilevelcache1/keng.jpg" alt="单身狗挖坑"></p>
+<h3 id="缓存更新"><a href="#缓存更新" class="headerlink" title="缓存更新"></a>缓存更新</h3><p>当数据发生变化时如何能够及时更新到本地缓存呢？缓存的更新又需要注意些什么呢？</p>
 <p>通常来说缓存更新有以下两种方式：</p>
 <ul>
 <li>主动更新：适合一致性要求不高但更新较为频繁的场景。应用可以设置一个较短的缓存过期时间，当缓存过期后回源查询后更新到缓存。好处是架构比较简单，不需要依赖额外的数据同步通道。</li>
@@ -268,21 +286,21 @@
 <li>支持pubsub：当有一个应用有多个实例，或者有多个应用都存在本地缓存时一份数据的变化需要同时广播到所有实例或者应用。</li>
 </ul>
 <p>从以上需求不难发现以上也基本上是消息所具备的特性，所以消息也就成为了本地缓存数据同步机制的不二选择。</p>
-<h4 id="缓存重建"><a href="#缓存重建" class="headerlink" title="缓存重建"></a>缓存重建</h4><p>当应用重启后为了防止大量请求穿透到后端，应用在提供服务之前需要通过重建本地的缓存进行预热。</p>
+<h3 id="缓存重建"><a href="#缓存重建" class="headerlink" title="缓存重建"></a>缓存重建</h3><p>当应用重启后为了防止大量请求穿透到后端，应用在提供服务之前需要通过重建本地的缓存进行预热。</p>
 <p>有两种方式：</p>
 <ul>
 <li>回源二级缓存、数据库或者后端的服务进行查询。该方式的弊端是如果本地的缓存数据量比较大会造成预热时间较长，预热周期内无法提供服务。为了减少预热的时间可以考虑并行预热，但是也要考虑不能对后端的服务造成过大的压力。</li>
 <li>本地缓存持久化。该方式的弊端是首先本地缓存框架需要有一个可靠的持久化机制，同时还要考虑停机期间增量数据如何同步的问题。一种方式是通过消息中间件进行回溯消费，但是应用端需要保存回溯的起点。</li>
 </ul>
-<h4 id="监控管理"><a href="#监控管理" class="headerlink" title="监控管理"></a>监控管理</h4><p>有了本地缓存后，我们还得考虑本地缓存的监控和管理。本地缓存不像分布式缓存，有较多的监控和管理的机制和手段可以提供支持。至少需要考虑以下一些点：</p>
+<h3 id="监控管理"><a href="#监控管理" class="headerlink" title="监控管理"></a>监控管理</h3><p>有了本地缓存后，我们还得考虑本地缓存的监控和管理。本地缓存不像分布式缓存，有较多的监控和管理的机制和手段可以提供支持。至少需要考虑以下一些点：</p>
 <ul>
 <li>监控点：命中率、缓存的总空间大小、空间使用率、各个命令的QPS、缓存的最后更新时间、rehash的次数</li>
 <li>告警：空间使用率告警、命中率告警（可选）</li>
 <li>管理：通过命令或者管理平台可以进行数据查询、脏数据清理、缓存开关等等</li>
 </ul>
-<h4 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h4><p>结合以上的问题和解决办法，新的缓存架构应该是这样的。</p>
-<p><img src="/images/cachearchitecture.jpg" alt="architecture"></p>
-<h3 id="缓存的选型"><a href="#缓存的选型" class="headerlink" title="缓存的选型"></a>缓存的选型</h3><p>从JVM的角度来说分堆内堆外两种，区别主要在于对GC的影响。</p>
+<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p>结合以上的问题和解决办法，新的缓存架构应该是这样的。</p>
+<p><img src="/images/multilevelcache1/cachearchitecture.jpg" alt="architecture"></p>
+<h2 id="缓存的选型"><a href="#缓存的选型" class="headerlink" title="缓存的选型"></a>缓存的选型</h2><p>从JVM的角度来说分堆内堆外两种，区别主要在于对GC的影响。</p>
 <table>
 <thead>
 <tr>
@@ -312,11 +330,11 @@
 </table>
 <ul>
 <li>序列化：由于JAVA对象本身就保存在堆内所以不存在序列化的问题，而使用堆外缓存时则需要考虑一种高效的序列化机制，把序列化好的数据缓存到缓存中。</li>
-<li>GC影响：堆内的主要一个弊端是对GC影响较大，如果跟新频率高则单位时间内产生的对象较多则GC的触发频率会加大，系统吞吐能力会下降。另外，如果存活的数据量大则GC时标记的对象过多会导致STW的时间过长，RT就会变大。</li>
+<li>GC影响：堆内的主要一个弊端是对GC影响较大，如果更新新频率高则单位时间内产生的对象较多则GC的触发频率会加大，系统吞吐能力会下降。另外，如果存活的数据量大则GC时标记的对象过多会导致STW的时间过长，RT就会变大。</li>
 </ul>
 <p>所以不同的场景可以考虑使用不同的类型的本地缓存。</p>
 <p>当然即使增加了序列化的成本，堆外缓存的QPS依然是在几百万的数量级，所以应该足以满足应用的需求。</p>
-<h3 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h3><ul>
+<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><ul>
 <li>上面提到如果使用堆外缓存需要考虑序列化的问题，那么又需要注意些什么地方呢？</li>
 <li>堆外缓存又有哪些开源方案？</li>
 <li>堆外缓存的容量评估又需要注意些什么？</li>
@@ -415,7 +433,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2016 Kenny Wang
+    		&copy; 2016 LIFE IS A BEACH
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
