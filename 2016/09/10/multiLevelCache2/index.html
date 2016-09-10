@@ -31,7 +31,7 @@
 
 开源实现本地缓存的开源实现也有不少，对于堆内缓存的开源方案则更多，比如Guava或者Ehcache，这个选择相对比较容易。这里我们重点关注的是堆外缓存的开源实现。了解">
 <meta property="og:image" content="http://yoursite.com/images/multilevelcache2/OHC-data.jpg">
-<meta property="og:updated_time" content="2016-09-10T11:12:13.000Z">
+<meta property="og:updated_time" content="2016-09-10T11:45:32.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="多级缓存 （下）- 堆外缓存">
 <meta name="twitter:description" content="写在开头
@@ -279,7 +279,7 @@
 <p>本文后续的内容以OHC作为基础进行介绍。</p>
 <h2 id="堆外缓存关注点"><a href="#堆外缓存关注点" class="headerlink" title="堆外缓存关注点"></a>堆外缓存关注点</h2><h3 id="序列化"><a href="#序列化" class="headerlink" title="序列化"></a>序列化</h3><p>从上一节我们大概可以了解到，存放一个JAVA对象到堆外缓存中需要有一个从JAVA对象到ByteBuffer的转换的过程。而为了尽量简化API的使用，使用者不需要去为对象编写特定的序列化过程，我们需要一个高效的序列化框架。先通过序列化框架序列化, 再转成堆外的ByteBuffer上。在堆外缓存的使用场景中，该序列化框架应该至少具备以下一些要求：</p>
 <blockquote>
-<h4 id="高性能"><a href="#高性能" class="headerlink" title="高性能"></a>高性能</h4><p>这个不用说，鬼都知道</p>
+<h4 id="高性能"><a href="#高性能" class="headerlink" title="高性能"></a>高性能</h4><p>这个不用说</p>
 <h4 id="序列化的数据overhead小"><a href="#序列化的数据overhead小" class="headerlink" title="序列化的数据overhead小"></a>序列化的数据overhead小</h4><p>由于堆外缓存本来就占用内存资源多，所以如果序列化框架序列化造成的overhead过大的话是无法接受的。其实如果序列化框架造成的overhead是定长的话是最完美的，少去了中间转换的过程，可以直接把JAVA对象序列化到堆外，大大提高了性能也能降低GC的频率。</p>
 <h4 id="简单易用"><a href="#简单易用" class="headerlink" title="简单易用"></a>简单易用</h4><p>使用要尽量简单，尽量少的倾入，最好是用户根本就不知道你用的是什么鬼。所以那些基于IDL的如PB, Thrift，以及基于Schema的如Avro就不是很好的选择，如果还要代码生成的就要崩溃了, 这些大部分是基于跨语言通讯的需要。</p>
 <h4 id="兼容性"><a href="#兼容性" class="headerlink" title="兼容性"></a>兼容性</h4><p>这里的兼容性包括几个方面：</p>
@@ -289,13 +289,16 @@
 <li>当然如果你的数据没有持久化又或者你的应用不支持热加载如OSGI可以不要考虑该问题。</li>
 </ul>
 </blockquote>
-<p>关于序列化协议的选择，有一个非常不错的benchmark可以参考 <a href="https://github.com/eishay/jvm-serializers/wiki" target="_blank" rel="external">jvm-serializers</a>，里面对各种序列化协议从各种不同维度进行了对比。最后我们选择了Kryo，因为Kryo在性能上以及序列化造成的overhead上均表现非常优异，且使用对用户透明。TODO 给个例子</p>
+<p>关于序列化协议的选择，有一个非常不错的benchmark可以参考 <a href="https://github.com/eishay/jvm-serializers/wiki" target="_blank" rel="external">jvm-serializers</a>，里面对各种序列化协议从各种不同维度进行了对比。最后我们选择了Kryo，因为Kryo在性能上以及序列化造成的overhead上均表现非常优异，且使用对用户透明。</p>
+<p>一个Kryo的使用例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Setup ThreadLocal of Kryo instances</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ThreadLocal&lt;Kryo&gt; kryos = <span class="keyword">new</span> ThreadLocal&lt;Kryo&gt;() &#123;</div><div class="line">    <span class="function"><span class="keyword">protected</span> Kryo <span class="title">initialValue</span><span class="params">()</span> </span>&#123;</div><div class="line">        Kryo kryo = <span class="keyword">new</span> Kryo();</div><div class="line">        <span class="comment">// configure kryo instance, customize settings</span></div><div class="line">        <span class="keyword">return</span> kryo;</div><div class="line">    &#125;;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">Kryo kryo = kryos.get();</div><div class="line">    <span class="comment">// ...</span></div><div class="line">Output output = <span class="keyword">new</span> Output(<span class="keyword">new</span> FileOutputStream(<span class="string">"file.bin"</span>));</div><div class="line">SomeClass someObject = ...</div><div class="line">kryo.writeObject(output, someObject);</div><div class="line">output.close();</div><div class="line"><span class="comment">// ...</span></div><div class="line">Input input = <span class="keyword">new</span> Input(<span class="keyword">new</span> FileInputStream(<span class="string">"file.bin"</span>));</div><div class="line">SomeClass someObject = kryo.readObject(input, SomeClass.class);</div><div class="line">input.close();</div></pre></td></tr></table></figure>
+<p>这里自己需要简单封装一下，因为Kryo不是线程安全的，且每次使用创建的成本较高，所以要么Pooling要么TLC.</p>
 <h3 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h3><h4 id="JAVA堆外内存分配"><a href="#JAVA堆外内存分配" class="headerlink" title="JAVA堆外内存分配"></a>JAVA堆外内存分配</h4><p>堆外内存的分配大家比较熟悉的是使用如下的JNI方式进行分配：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">java.nio.ByteBuffer.allocateDirect(<span class="keyword">int</span>)</div></pre></td></tr></table></figure>
 <p>大抵的原理是其内部还是使用的Unsafe进行的内存分配, 从下面的API声明可知该方法是一个JNI的封装。详细请参考：<a href="http://www.docjar.com/html/api/sun/misc/Unsafe.java.html" target="_blank" rel="external">Unsafe</a>。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">long</span> <span class="title">allocateMemory</span><span class="params">(<span class="keyword">long</span> bytes)</span></span></div></pre></td></tr></table></figure>
 <p>通过Unsafe进行分配的内存受限于XX:MaxDirectMemorySize的配置，换句话无论哪里用到了堆外缓存，只要通过Unsafe的方式进行的分配都是共享该Quota的。最好的方式其实是不同用途的堆外内存可以隔离开来，比如堆外缓存的一块，netty的一块。</p>
-<p>JNA（Java Native Access) 是社区开发的一套类库，号称是JNI的终结者。传统需要调用本地方法既要写c代码生成DLL/SO，又要写java代码进行封装才能提供JAVA调用，既繁琐效率又低。而JNA是通过libffi来实现的，提供了一套接口，用户只需要通过JAVA代码定义本地方法和数据类型，JNA负责把JAVA方法的调用进行Dispatch到相应的本地方法调用，你不再需要不厌其烦的为每个本地方法都写个C和JAVA的wrapper方法对。详细请参考我的另外一个文章。TODO</p>
+<p>JNA（Java Native Access) 是社区开发的一套类库，号称是JNI的终结者。传统需要调用本地方法既要写c代码生成DLL/SO，又要写java代码进行封装才能提供JAVA调用，既繁琐效率又低。而JNA是通过libffi来实现的，提供了一套接口，用户只需要通过JAVA代码定义本地方法和数据类型，JNA负责把JAVA方法的调用进行Dispatch到相应的本地方法调用，你不再需要不厌其烦的为每个本地方法都写个C和JAVA的wrapper方法对。限于篇幅，请参考另外一篇。</p>
 <p>先来看一下，通过JNA的malloc是怎么做的：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">com.sun.jna.Native.malloc(<span class="keyword">long</span>)</div></pre></td></tr></table></figure>
 <p>方法声明如下：</p>
@@ -310,8 +313,8 @@
 <p>Segment的数量默认是内核的两倍，每个Segment的bucket数量默认是8192，loadFactor是0.75，应用需要根据自己的key的数量来合理的设置以上参数，否则可能会导致rehash次数过多或者访问效率过低。实现方式跟普通的ConcurrentHashMap差不多，只是从上图可知每个bucket及每个entry的数据都存放在一个特定的堆外数据结构当中。每个bucket 8个字节存放这个bucket的首个entry的内存地址，每个entry也是一块连续的内存，由固定长度的64个字节的头和key length+value length的data组成。</p>
 <p>当往cache中放一个k/v时，会动态申请一块新的内存，删除后直接释放。为什么没有像netty一样通过维护一组不同大小的buffer来组合复用内存呢？个人觉得cache主要解决的是读多写少的问题，数据变的频率较低。另外堆外缓存存放的是百万甚至千万的entry，所以对内存大小比较敏感，最好是一点也不浪费，要多少则申请多少，而不是使用固定大小的内存块，大小总归不一定匹配，会有一些浪费。</p>
 <p>最后，OHC也提供了一个参数用于配置堆外缓存的总内存大小，如果你是需要缓存全量数据的则使用的时候需要合理评估容量进行设置。如果缓存的是热点数据，当空间不足时会根据LRU进行淘汰数据。</p>
-<h3 id="容量评估"><a href="#容量评估" class="headerlink" title="容量评估"></a>容量评估</h3><p>当你使用堆外缓存时，一个很重要的就是需要提前进行内存容量的评估。这里有个需要重点考虑的因数是除了业务数据本身的大小之外，你还要考虑序列化框架的序列化和缓存框架本身的数据结构造成的overhead。以OHC为例，由OHC的数据结构可知，OHC造成的overhead = bucket number <em> 8字节 + entry number </em> 64个字节。</p>
-<p>当然最稳妥的方式是进行压测！</p>
+<h3 id="容量评估"><a href="#容量评估" class="headerlink" title="容量评估"></a>容量评估</h3><p>当你使用堆外缓存时，一个很重要的就是需要提前进行内存容量的评估。这里有个需要重点考虑的因数是除了业务数据本身的大小之外，你还要考虑序列化框架的序列化和缓存框架本身的数据结构造成的overhead。比如：kryo需要可能需要存储对象的类名、属性类型、属性是否为空等各种标识，取决于你的对象的复杂程度，会造成额外的overhead. 另外，以OHC为例，由OHC的数据结构可知，OHC造成的overhead = bucket number * 8字节 + entry number * 64个字节。</p>
+<p>当然最稳妥的方式是根据业务情况进行压测！</p>
 <h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>后续还可以关注以下问题：</p>
 <ul>
 <li>评测缓存数据量及更新频率对GC的影响，为选择堆内还是堆外缓存提供参考依据。</li>
